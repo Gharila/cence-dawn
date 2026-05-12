@@ -1,0 +1,287 @@
+{% comment %}
+  cence product page — split 55/45 layout.
+  Left: sticky image carousel. Right: block-driven product info.
+  Dawn's full block schema is preserved for editor compatibility.
+  Add-to-cart uses a native Shopify product form; cence.js handles AJAX.
+{% endcomment %}
+
+{{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+
+{%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+<div class="detail-layout">
+
+  <!-- ── LEFT: sticky image carousel ────────────────────────────────── -->
+  <div class="detail-left">
+    <div class="img-box">
+      {%- if product.images.size == 0 -%}
+        <div class="img-ph">add product<br>image here</div>
+      {%- else -%}
+        {%- for image in product.images -%}
+          <img
+            src="{{ image | image_url: width: 800 }}"
+            alt="{{ image.alt | default: product.title | escape }}"
+            class="{% if forloop.first %}active{% endif %}"
+            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            width="{{ image.width }}"
+            height="{{ image.height }}"
+          >
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- if product.images.size > 1 -%}
+        <button class="arr arr-left" aria-label="{{ 'general.slider.previous_slide' | t }}">
+          <svg viewBox="0 0 12 12"><polyline points="8,2 4,6 8,10"/></svg>
+        </button>
+        <button class="arr arr-right" aria-label="{{ 'general.slider.next_slide' | t }}">
+          <svg viewBox="0 0 12 12"><polyline points="4,2 8,6 4,10"/></svg>
+        </button>
+        <div class="dot-nav">
+          {%- for image in product.images -%}
+            <div class="dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}"></div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <!-- ── RIGHT: block-driven product info ──────────────────────────── -->
+  <div class="detail-right">
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+
+        {%- when '@app' -%}
+          {% render block %}
+
+        {%- when 'title' -%}
+          <h1 class="d-name" {{ block.shopify_attributes }}>{{ product.title | downcase }}</h1>
+
+        {%- when 'text' -%}
+          {%- if block.settings.text != blank -%}
+            <p class="d-sub" {{ block.shopify_attributes }}>
+              {{- block.settings.text | downcase -}}
+            </p>
+          {%- endif -%}
+
+        {%- when 'price' -%}
+          <p class="d-price" {{ block.shopify_attributes }}>
+            {{- product.selected_or_first_available_variant.price | money -}}
+          </p>
+          <div class="d-rule"></div>
+
+        {%- when 'variant_picker' -%}
+          {%- unless product.has_only_default_variant -%}
+            <div {{ block.shopify_attributes }}>
+              <p class="d-label">size</p>
+              <div class="size-row">
+                {%- for variant in product.variants -%}
+                  <button
+                    type="button"
+                    class="sz{% if forloop.first %} sel{% endif %}"
+                    data-variant-id="{{ variant.id }}"
+                    {% unless variant.available %}disabled style="opacity:0.3;cursor:not-allowed;"{% endunless %}
+                    aria-label="{{ variant.option1 }}"
+                  >{{ variant.option1 | downcase }}</button>
+                {%- endfor -%}
+              </div>
+              <span class="size-guide">size guide</span>
+            </div>
+          {%- endunless -%}
+
+        {%- when 'quantity_selector' -%}
+          {%- comment -%}cence doesn't show a quantity selector{%- endcomment -%}
+
+        {%- when 'buy_buttons' -%}
+          <div {{ block.shopify_attributes }}>
+            {%- form 'product', product,
+              id: product_form_id,
+              class: 'product-form',
+              novalidate: 'novalidate',
+              data-type: 'add-to-cart-form'
+            -%}
+              <input type="hidden" name="id" id="selected-variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+              <button
+                type="button"
+                class="add-btn"
+                id="add-to-cart-btn"
+                {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+              >
+                {%- if product.selected_or_first_available_variant.available -%}
+                  {{ 'products.product.add_to_cart' | t | default: 'add to bag' }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t | default: 'sold out' }}
+                {%- endif -%}
+              </button>
+            {%- endform -%}
+          </div>
+
+        {%- when 'description' -%}
+          {%- if product.description != blank -%}
+            <div class="acc-item" {{ block.shopify_attributes }}>
+              <button class="acc-toggle" type="button">product details<span class="acc-icon">+</span></button>
+              <div class="acc-body">{{ product.description }}</div>
+            </div>
+          {%- endif -%}
+
+        {%- when 'collapsible_tab' -%}
+          {%- if block.settings.content != blank or block.settings.page != blank -%}
+            <div class="acc-item" {{ block.shopify_attributes }}>
+              <button class="acc-toggle" type="button">
+                {{ block.settings.heading | downcase }}<span class="acc-icon">+</span>
+              </button>
+              <div class="acc-body">
+                {{ block.settings.content }}
+                {%- if block.settings.page != blank -%}
+                  {{ pages[block.settings.page].content }}
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+        {%- when 'share' -%}
+          {%- comment -%}share block — not shown in cence's minimalist design{%- endcomment -%}
+
+        {%- when 'custom_liquid' -%}
+          {{ block.settings.custom_liquid }}
+
+      {%- endcase -%}
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{% render 'footer' %}
+
+{% schema %}
+{
+  "name": "t:sections.main-product.name",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "text",
+      "name": "t:sections.main-product.blocks.text.name",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "default": "t:sections.main-product.blocks.text.settings.text.default",
+          "label": "t:sections.main-product.blocks.text.settings.text.label"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "options": [
+            { "value": "body", "label": "t:sections.main-product.blocks.text.settings.text_style.options__1.label" },
+            { "value": "subtitle", "label": "t:sections.main-product.blocks.text.settings.text_style.options__2.label" },
+            { "value": "uppercase", "label": "t:sections.main-product.blocks.text.settings.text_style.options__3.label" }
+          ],
+          "default": "body",
+          "label": "t:sections.main-product.blocks.text.settings.text_style.label"
+        }
+      ]
+    },
+    { "type": "title", "name": "t:sections.main-product.blocks.title.name", "limit": 1 },
+    { "type": "price", "name": "t:sections.main-product.blocks.price.name", "limit": 1 },
+    {
+      "type": "variant_picker",
+      "name": "t:sections.main-product.blocks.variant_picker.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "picker_type",
+          "options": [
+            { "value": "dropdown", "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__1.label" },
+            { "value": "button", "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.options__2.label" }
+          ],
+          "default": "button",
+          "label": "t:sections.main-product.blocks.variant_picker.settings.picker_type.label"
+        }
+      ]
+    },
+    { "type": "quantity_selector", "name": "t:sections.main-product.blocks.quantity_selector.name", "limit": 1 },
+    {
+      "type": "buy_buttons",
+      "name": "t:sections.main-product.blocks.buy_buttons.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": false,
+          "label": "t:sections.main-product.blocks.buy_buttons.settings.show_dynamic_checkout.label",
+          "info": "t:sections.main-product.blocks.buy_buttons.settings.show_dynamic_checkout.info"
+        }
+      ]
+    },
+    { "type": "description", "name": "t:sections.main-product.blocks.description.name", "limit": 1 },
+    {
+      "type": "collapsible_tab",
+      "name": "t:sections.main-product.blocks.collapsible_tab.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "t:sections.main-product.blocks.collapsible_tab.settings.heading.default",
+          "label": "t:sections.main-product.blocks.collapsible_tab.settings.heading.label"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:sections.main-product.blocks.collapsible_tab.settings.content.label"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "t:sections.main-product.blocks.collapsible_tab.settings.page.label"
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "t:sections.main-product.blocks.share.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "share_label",
+          "label": "t:sections.main-product.blocks.share.settings.text.label",
+          "default": "t:sections.main-product.blocks.share.settings.text.default"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "t:sections.custom-liquid.name",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "t:sections.custom-liquid.settings.custom_liquid.label"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_info",
+      "default": true,
+      "label": "t:sections.main-product.settings.enable_sticky_info.label"
+    },
+    {
+      "type": "header",
+      "content": "cence: Product Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_guide",
+      "label": "Show size guide link",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

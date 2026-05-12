@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "entry": {
+      "type": "cence-entry-page",
+      "settings": {
+        "button_label": "[shop]"
+      }
+    }
+  },
+  "order": ["entry"]
+}

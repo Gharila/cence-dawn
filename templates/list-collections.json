@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "cence-list-collections",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

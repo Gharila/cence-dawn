@@ -1,0 +1,36 @@
+<section class="list-collections-section">
+  {%- if section.settings.heading != blank -%}
+    <p class="list-collections-heading">{{ section.settings.heading }}</p>
+  {%- endif -%}
+  <nav class="cat-list">
+    {%- for collection in collections -%}
+      <a class="cat-item" href="{{ collection.url }}">{{ collection.title | downcase }}</a>
+    {%- else -%}
+      <a class="cat-item" href="{{ routes.collections_url }}/hoodies">hoodies</a>
+      <a class="cat-item" href="{{ routes.collections_url }}/t-shirts">t-shirts</a>
+      <a class="cat-item" href="{{ routes.collections_url }}/shorts">shorts</a>
+      <a class="cat-item" href="{{ routes.collections_url }}/joggers">joggers</a>
+      <a class="cat-item" href="{{ routes.collections_url }}/accessories">accessories</a>
+    {%- endfor -%}
+  </nav>
+</section>
+
+{% schema %}
+{
+  "name": "Collections List",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading above list",
+      "info": "Leave blank to hide"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections List"
+    }
+  ]
+}
+{% endschema %}

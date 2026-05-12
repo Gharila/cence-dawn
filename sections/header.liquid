@@ -1,0 +1,264 @@
+{% comment %}
+  cence header — replaces Dawn's header HTML with cence's minimalist top bar.
+  Dawn's full schema is preserved so all editor settings remain functional.
+  Hidden on the index (entry) template — that page has its own centred logo.
+{% endcomment %}
+
+{% unless template == 'index' %}
+<header class="top-bar" id="top-bar">
+
+  <div class="nav-left">
+    {%- if template == 'product' -%}
+      <a class="back-btn" href="{{ product.collections.last.url | default: routes.collections_url }}">&#8592; back</a>
+    {%- elsif template == 'collection' -%}
+      <a class="back-btn" href="{{ routes.collections_url }}">&#8592; back</a>
+    {%- elsif template == 'list-collections' -%}
+      <a class="back-btn" href="{{ routes.root_url }}">&#8592; back</a>
+    {%- else -%}
+      <a class="back-btn" href="javascript:history.back()">&#8592; back</a>
+    {%- endif -%}
+  </div>
+
+  <div class="nav-centre">
+    <a class="logo-link" href="{{ routes.root_url }}">
+      {%- if settings.logo -%}
+        <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}">
+      {%- else -%}
+        <img src="{{ 'cence_logo.svg' | asset_url }}" alt="{{ shop.name }}">
+      {%- endif -%}
+    </a>
+  </div>
+
+  <div class="nav-right">
+    <button class="icon-btn" id="search-btn" aria-label="{{ 'general.search.search' | t }}">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+    </button>
+
+    <div class="basket-wrap">
+      <button class="icon-btn" id="basket-btn" aria-label="{{ 'sections.cart.title' | t }}">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </button>
+      <span class="basket-count" id="basket-count">{{ cart.item_count }}</span>
+
+      <div class="basket-dropdown" id="basket-dropdown">
+        <div class="basket-header">your bag</div>
+        <div class="basket-items" id="basket-items">
+          {%- if cart.item_count == 0 -%}
+            <p class="basket-empty">your bag is empty</p>
+          {%- else -%}
+            {%- for item in cart.items -%}
+              <div class="basket-item">
+                <div class="basket-item-info">
+                  <div class="basket-item-name">{{ item.product.title | downcase }}</div>
+                  <div class="basket-item-meta">size {{ item.variant.option1 | downcase }}</div>
+                </div>
+                <span class="basket-item-price">{{ item.final_price | money }}</span>
+                <button class="basket-item-remove" data-item-key="{{ item.key }}" aria-label="{{ 'accessibility.remove' | t }}">&#215;</button>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+        <div class="basket-footer" id="basket-footer" {% if cart.item_count == 0 %}style="display:none"{% endif %}>
+          <div class="basket-total">
+            <span>total</span>
+            <span id="basket-dropdown-total">{{ cart.total_price | money }}</span>
+          </div>
+          <a href="/checkout" class="basket-checkout-btn">checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "section-header",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "select",
+      "id": "logo_position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "t:sections.header.settings.logo_position.options__2.label"
+        },
+        {
+          "value": "top-center",
+          "label": "t:sections.header.settings.logo_position.options__3.label"
+        },
+        {
+          "value": "middle-left",
+          "label": "t:sections.header.settings.logo_position.options__1.label"
+        },
+        {
+          "value": "middle-center",
+          "label": "t:sections.header.settings.logo_position.options__4.label"
+        }
+      ],
+      "default": "middle-left",
+      "label": "t:sections.header.settings.logo_position.label",
+      "info": "t:sections.header.settings.logo_help.content"
+    },
+    {
+      "type": "select",
+      "id": "mobile_logo_position",
+      "options": [
+        {
+          "value": "center",
+          "label": "t:sections.header.settings.mobile_logo_position.options__1.label"
+        },
+        {
+          "value": "left",
+          "label": "t:sections.header.settings.mobile_logo_position.options__2.label"
+        }
+      ],
+      "default": "center",
+      "label": "t:sections.header.settings.mobile_logo_position.label"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "t:sections.header.settings.menu.label"
+    },
+    {
+      "type": "select",
+      "id": "menu_type_desktop",
+      "options": [
+        {
+          "value": "dropdown",
+          "label": "t:sections.header.settings.menu_type_desktop.options__1.label"
+        },
+        {
+          "value": "mega",
+          "label": "t:sections.header.settings.menu_type_desktop.options__2.label"
+        },
+        {
+          "value": "drawer",
+          "label": "t:sections.header.settings.menu_type_desktop.options__3.label"
+        }
+      ],
+      "default": "dropdown",
+      "label": "t:sections.header.settings.menu_type_desktop.label"
+    },
+    {
+      "type": "select",
+      "id": "sticky_header_type",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.header.settings.sticky_header_type.options__1.label"
+        },
+        {
+          "value": "on-scroll-up",
+          "label": "t:sections.header.settings.sticky_header_type.options__2.label"
+        },
+        {
+          "value": "always",
+          "label": "t:sections.header.settings.sticky_header_type.options__3.label"
+        },
+        {
+          "value": "reduce-logo-size",
+          "label": "t:sections.header.settings.sticky_header_type.options__4.label"
+        }
+      ],
+      "default": "on-scroll-up",
+      "label": "t:sections.header.settings.sticky_header_type.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_line_separator",
+      "default": true,
+      "label": "t:sections.header.settings.show_line_separator.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__1.content"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "menu_color_scheme",
+      "label": "t:sections.header.settings.menu_color_scheme.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__utilities.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_country_selector",
+      "default": true,
+      "label": "t:sections.header.settings.enable_country_selector.label",
+      "info": "t:sections.header.settings.enable_country_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_language_selector",
+      "default": true,
+      "label": "t:sections.header.settings.enable_language_selector.label",
+      "info": "t:sections.header.settings.enable_language_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_customer_avatar",
+      "default": true,
+      "label": "t:sections.header.settings.enable_customer_avatar.label",
+      "info": "t:sections.header.settings.enable_customer_avatar.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.header.settings.margin_bottom.label",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 36,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 36,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

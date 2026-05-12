@@ -1,0 +1,44 @@
+<section class="entry-section">
+  <div class="entry-logo-top">
+    <a href="{{ routes.root_url }}">
+      {%- if settings.logo -%}
+        <img src="{{ settings.logo | image_url: width: 300 }}" alt="{{ shop.name }}">
+      {%- else -%}
+        <img src="{{ 'cence_logo.svg' | asset_url }}" alt="{{ shop.name }}">
+      {%- endif -%}
+    </a>
+  </div>
+  <a class="shop-btn" href="{{ section.settings.button_link | default: routes.collections_url }}">
+    {{ section.settings.button_label | default: '[shop]' }}
+  </a>
+</section>
+
+{% schema %}
+{
+  "name": "Entry Page",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "[shop]"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to your collections page"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Entry Page"
+    }
+  ]
+}
+{% endschema %}

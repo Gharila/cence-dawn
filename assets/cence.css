@@ -1,0 +1,379 @@
+/* ─── CENCE DESIGN LAYER ────────────────────────────────────────────────────────
+   Loaded after Dawn's base.css. Overrides Dawn's defaults with cence's
+   minimalist design. CSS variables are injected from settings in theme.liquid.
+─────────────────────────────────────────────────────────────────────────────── */
+
+/* ─── GLOBAL RESET & BASE ───────────────────────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  width:100%;min-height:100%;
+  background:var(--bg) !important;
+  color:var(--text) !important;
+}
+body{
+  /* Override Dawn's grid layout — cence uses fixed header + normal page flow */
+  display:block !important;
+  font-family:var(--sans) !important;
+  font-size:unset !important;
+  letter-spacing:unset !important;
+  line-height:unset !important;
+}
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-thumb{background:var(--border);}
+
+/* ─── LOGO ──────────────────────────────────────────────────────────────────── */
+.logo-link{cursor:pointer;display:inline-flex;align-items:center;text-decoration:none;}
+.logo-link img{height:var(--logo-height,72px);width:auto;display:block;opacity:0.55;}
+
+/* ─── TOP BAR ───────────────────────────────────────────────────────────────── */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;height:88px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 36px;z-index:200;background:var(--bg);
+  border-bottom:0.5px solid var(--border);
+}
+.nav-left{display:flex;align-items:center;gap:20px;}
+.nav-centre{position:absolute;left:50%;transform:translateX(-50%);}
+.nav-right{display:flex;align-items:center;gap:18px;}
+.back-btn{
+  font-family:var(--sans);font-size:10px;letter-spacing:0.18em;font-weight:300;
+  color:var(--text);opacity:0.38;background:none;border:none;cursor:pointer;
+  transition:opacity 0.2s;text-decoration:none;display:inline-block;
+}
+.back-btn:hover{opacity:1;}
+.icon-btn{
+  background:none;border:none;cursor:pointer;color:var(--text);opacity:0.5;
+  transition:opacity 0.2s;display:flex;align-items:center;padding:3px;
+}
+.icon-btn:hover{opacity:1;}
+.icon-btn svg{width:17px;height:17px;stroke:var(--text);fill:none;stroke-width:1.3;}
+.basket-wrap{position:relative;}
+.basket-count{
+  font-size:7px;background:var(--text);color:var(--bg);
+  border-radius:50%;width:13px;height:13px;
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:-4px;right:-5px;font-family:var(--sans);
+}
+
+/* ─── BASKET DROPDOWN ───────────────────────────────────────────────────────── */
+.basket-dropdown{
+  position:absolute;top:calc(100% + 14px);right:0;width:300px;
+  background:var(--bg);border:0.5px solid var(--border);z-index:500;
+  opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity 0.22s,transform 0.22s,visibility 0.22s;
+}
+.basket-dropdown.open{opacity:1;visibility:visible;transform:translateY(0);}
+.basket-header{
+  padding:16px 20px 12px;border-bottom:0.5px solid var(--border);
+  font-family:var(--sans);font-size:9px;letter-spacing:0.3em;font-weight:300;color:var(--muted);
+}
+.basket-items{max-height:240px;overflow-y:auto;}
+.basket-empty{
+  padding:28px 20px;text-align:center;
+  font-family:var(--serif);font-size:12px;letter-spacing:0.12em;color:var(--muted);font-style:italic;
+}
+.basket-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;border-bottom:0.5px solid var(--border);
+}
+.basket-item-info{flex:1;}
+.basket-item-name{font-family:var(--sans);font-size:10px;letter-spacing:0.14em;color:var(--text);margin-bottom:3px;}
+.basket-item-meta{font-family:var(--serif);font-size:10px;letter-spacing:0.1em;color:var(--muted);font-style:italic;}
+.basket-item-price{font-family:var(--sans);font-size:10px;letter-spacing:0.12em;color:var(--text);}
+.basket-item-remove{
+  background:none;border:none;cursor:pointer;font-size:14px;
+  color:var(--muted);margin-left:10px;transition:color 0.2s;line-height:1;
+}
+.basket-item-remove:hover{color:var(--text);}
+.basket-footer{padding:14px 20px;}
+.basket-total{
+  display:flex;justify-content:space-between;
+  font-family:var(--sans);font-size:10px;letter-spacing:0.18em;color:var(--text);margin-bottom:14px;
+}
+.basket-checkout-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;height:40px;background:var(--text);color:var(--bg);
+  border:none;cursor:pointer;text-decoration:none;
+  font-family:var(--sans);font-size:9px;letter-spacing:0.3em;font-weight:300;transition:opacity 0.2s;
+}
+.basket-checkout-btn:hover{opacity:0.8;}
+
+/* ─── SEARCH OVERLAY ────────────────────────────────────────────────────────── */
+.search-overlay{
+  position:fixed;inset:0;background:var(--bg);z-index:600;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity 0.3s,visibility 0.3s;
+}
+.search-overlay.open{opacity:1;visibility:visible;}
+.search-close{
+  position:absolute;top:30px;right:36px;
+  font-family:var(--sans);font-size:9px;letter-spacing:0.22em;
+  color:var(--text);opacity:0.35;background:none;border:none;cursor:pointer;transition:opacity 0.2s;
+}
+.search-close:hover{opacity:1;}
+.search-form{display:flex;flex-direction:column;align-items:center;}
+.search-input{
+  width:min(480px,78vw);font-family:var(--serif);font-size:22px;font-weight:300;
+  letter-spacing:0.1em;color:var(--text);background:none;border:none;
+  border-bottom:0.5px solid var(--text);padding:10px 0;outline:none;
+}
+.search-input::placeholder{color:var(--muted);}
+.search-hint{font-family:var(--sans);font-size:8px;letter-spacing:0.25em;color:var(--muted);margin-top:12px;}
+
+/* ─── ENTRY PAGE ────────────────────────────────────────────────────────────── */
+.entry-section{
+  height:100vh;display:flex;align-items:center;justify-content:center;position:relative;
+}
+.entry-logo-top{
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);opacity:0.55;
+}
+.entry-logo-top a{display:inline-flex;}
+.entry-logo-top img{height:var(--logo-height,72px);}
+.shop-btn{
+  font-family:var(--sans);font-size:11px;letter-spacing:0.3em;font-weight:300;
+  color:var(--text);background:none;border:none;cursor:pointer;
+  padding:5px 2px;position:relative;transition:opacity 0.2s;opacity:0.6;
+  text-decoration:none;display:inline-block;
+}
+.shop-btn::after{
+  content:'';position:absolute;bottom:2px;left:0;right:0;
+  height:0.5px;background:var(--text);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.35s ease;
+}
+.shop-btn:hover::after{transform:scaleX(1);}
+.shop-btn:hover{opacity:1;}
+
+/* ─── COLLECTIONS LIST PAGE ─────────────────────────────────────────────────── */
+.list-collections-section{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding-top:88px;
+}
+.cat-list{display:flex;flex-direction:column;align-items:center;gap:26px;}
+.cat-item{
+  font-family:var(--sans);font-size:12px;letter-spacing:0.3em;font-weight:300;
+  color:var(--text);text-decoration:none;display:block;
+  padding:3px 2px;position:relative;transition:opacity 0.2s;
+  animation:fadeUp 0.5s ease both;
+}
+.cat-item:nth-child(1){animation-delay:.04s}.cat-item:nth-child(2){animation-delay:.09s}
+.cat-item:nth-child(3){animation-delay:.14s}.cat-item:nth-child(4){animation-delay:.19s}
+.cat-item:nth-child(5){animation-delay:.24s}
+.cat-item::after{
+  content:'';position:absolute;bottom:1px;left:0;right:0;height:0.5px;background:var(--text);
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease;
+}
+.cat-item:hover::after{transform:scaleX(1);}
+.cat-item:hover{opacity:0.5;}
+.template-list-collections .logo-link img{opacity:0.55;}
+.template-list-collections .cat-item{opacity:0.6;}
+.template-list-collections .cat-item:hover{opacity:1;}
+
+/* ─── COLLECTION / GRID PAGE ────────────────────────────────────────────────── */
+.grid-main{width:100%;max-width:1060px;margin:0 auto;padding:116px 48px 0;}
+.grid-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:44px;}
+.grid-cat-label{font-family:var(--sans);font-size:11px;letter-spacing:0.26em;font-weight:300;color:var(--text);}
+.grid-controls{display:flex;align-items:center;gap:20px;}
+.ctrl-btn{
+  font-family:var(--sans);font-size:9px;letter-spacing:0.24em;font-weight:300;
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:5px;padding:0;transition:color 0.2s;
+}
+.ctrl-btn:hover{color:var(--text);}
+.ctrl-icon{width:9px;height:9px;stroke:currentColor;fill:none;stroke-width:1.5;}
+.dropdown-wrap{position:relative;}
+.dropdown-panel{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:var(--bg);border:0.5px solid var(--border);min-width:150px;z-index:300;
+  opacity:0;visibility:hidden;transform:translateY(4px);
+  transition:opacity 0.2s,transform 0.2s,visibility 0.2s;
+}
+.dropdown-panel.open{opacity:1;visibility:visible;transform:translateY(0);}
+.dropdown-option{
+  display:block;width:100%;background:none;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:9px;letter-spacing:0.18em;font-weight:300;
+  color:var(--text);padding:10px 14px;text-align:left;
+  border-bottom:0.5px solid var(--border);transition:background 0.15s;
+}
+.dropdown-option:last-child{border-bottom:none;}
+.dropdown-option:hover{background:rgba(46,46,46,0.04);}
+.dropdown-option.active{color:var(--btn);}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px 20px;padding-bottom:72px;}
+.product-card{cursor:pointer;animation:fadeUp 0.5s ease both;text-decoration:none;display:block;}
+.product-card:nth-child(1){animation-delay:.04s}.product-card:nth-child(2){animation-delay:.09s}
+.product-card:nth-child(3){animation-delay:.14s}.product-card:nth-child(4){animation-delay:.19s}
+.product-card:nth-child(5){animation-delay:.24s}.product-card:nth-child(6){animation-delay:.29s}
+.product-img{
+  width:100%;aspect-ratio:3/4;background:#cec9ce;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:13px;overflow:hidden;transition:transform 0.45s ease;
+}
+.product-img img{width:100%;height:100%;object-fit:cover;}
+.product-card:hover .product-img{transform:scale(1.02);}
+.ph-label{font-family:var(--sans);font-size:7px;letter-spacing:0.3em;color:var(--muted);opacity:0.4;}
+.p-name{font-family:var(--sans);font-size:10px;letter-spacing:0.2em;font-weight:300;color:var(--text);margin-bottom:4px;}
+.p-price{font-family:var(--serif);font-size:11px;letter-spacing:0.14em;color:var(--muted);}
+
+/* ─── FOOTER ────────────────────────────────────────────────────────────────── */
+.page-footer{
+  width:100%;border-top:0.5px solid var(--border);padding:44px 48px 36px;margin-top:72px;
+}
+.footer-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;}
+.footer-col-label{font-family:var(--sans);font-size:7px;letter-spacing:0.4em;color:var(--muted);margin-bottom:16px;}
+.footer-link{
+  display:block;font-family:var(--sans);font-size:9px;letter-spacing:0.18em;font-weight:300;
+  color:var(--text);opacity:0.42;cursor:pointer;margin-bottom:9px;
+  background:none;border:none;text-align:left;transition:opacity 0.2s;text-decoration:none;
+}
+.footer-link:hover{opacity:0.85;}
+.footer-bottom{
+  max-width:1060px;margin:24px auto 0;
+  border-top:0.5px solid var(--border);padding-top:18px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+}
+.footer-copy{font-family:var(--sans);font-size:7px;letter-spacing:0.22em;color:var(--muted);}
+.footer-legal-row{display:flex;gap:18px;flex-wrap:wrap;}
+.footer-legal{
+  font-family:var(--sans);font-size:7px;letter-spacing:0.18em;
+  color:var(--muted);cursor:pointer;background:none;border:none;transition:opacity 0.2s;text-decoration:none;
+}
+.footer-legal:hover{opacity:0.7;}
+
+/* ─── PRODUCT DETAIL ────────────────────────────────────────────────────────── */
+.detail-layout{display:grid;grid-template-columns:55% 45%;margin-top:88px;}
+.detail-left{
+  position:sticky;top:88px;height:calc(100vh - 88px);
+  display:flex;align-items:center;justify-content:center;padding:36px;
+}
+.img-box{
+  position:relative;width:100%;max-width:430px;aspect-ratio:3/4;
+  background:#cec9ce;display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.img-box img{
+  width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0;opacity:0;transition:opacity 0.4s;
+}
+.img-box img.active{opacity:1;}
+.img-ph{font-family:var(--sans);font-size:7px;letter-spacing:0.28em;color:var(--muted);opacity:0.35;text-align:center;line-height:2.4;}
+.img-box .arr{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;opacity:0;transition:opacity 0.2s;z-index:10;padding:10px;
+}
+.img-box:hover .arr{opacity:0.7;}
+.arr-left{left:4px;}.arr-right{right:4px;}
+.arr svg{width:11px;height:11px;stroke:var(--text);fill:none;stroke-width:1.5;}
+.dot-nav{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px;}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--text);opacity:0.18;cursor:pointer;transition:opacity 0.2s;}
+.dot.active{opacity:0.6;}
+.detail-right{padding:84px 52px 0 44px;display:flex;flex-direction:column;}
+.d-name{font-family:var(--sans);font-size:22px;font-weight:300;letter-spacing:0.06em;line-height:1.2;margin-bottom:7px;}
+.d-sub{font-family:var(--serif);font-size:12px;letter-spacing:0.16em;font-style:italic;color:var(--muted);margin-bottom:22px;}
+.d-price{font-family:var(--sans);font-size:14px;letter-spacing:0.16em;font-weight:300;margin-bottom:28px;}
+.d-rule{width:52px;height:0.5px;background:rgba(46,46,46,0.22);margin-bottom:24px;}
+.d-label{font-family:var(--sans);font-size:7px;letter-spacing:0.38em;font-weight:300;color:var(--muted);margin-bottom:10px;}
+.size-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.sz{
+  font-family:var(--sans);font-size:9px;letter-spacing:0.12em;font-weight:300;
+  width:36px;height:36px;border:0.5px solid var(--border);
+  background:none;cursor:pointer;color:var(--text);transition:border-color 0.2s,background 0.2s;
+}
+.sz:hover{border-color:var(--text);}
+.sz.sel,.sz[aria-checked="true"]{background:var(--text);color:var(--bg);border-color:var(--text);}
+.size-guide{font-family:var(--sans);font-size:7px;letter-spacing:0.2em;color:var(--muted);cursor:pointer;text-decoration:underline;margin-bottom:24px;display:inline-block;}
+.material-block{margin-bottom:24px;}
+.d-body{font-family:var(--serif);font-size:11px;letter-spacing:0.1em;line-height:1.95;color:var(--muted);}
+.delivery-block{margin-bottom:24px;}
+.d-del-row{display:flex;gap:8px;align-items:baseline;margin-bottom:6px;}
+.d-dot{font-size:5px;color:var(--muted);opacity:0.5;flex-shrink:0;margin-top:3px;}
+.d-del-text{font-family:var(--sans);font-size:9px;letter-spacing:0.1em;font-weight:300;color:var(--muted);line-height:1.6;}
+.add-btn{
+  font-family:var(--sans);font-size:9px;letter-spacing:0.3em;font-weight:300;
+  background:var(--btn);color:var(--btn-text);
+  border:none;cursor:pointer;height:42px;width:100%;transition:opacity 0.2s;margin-bottom:24px;
+}
+.add-btn:hover{opacity:0.85;}
+.acc-item{border-top:0.5px solid var(--border);}
+.acc-item:last-of-type{border-bottom:0.5px solid var(--border);}
+.acc-toggle{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;padding:13px 0;
+  font-family:var(--sans);font-size:8px;letter-spacing:0.28em;font-weight:300;color:var(--text);
+}
+.acc-icon{font-size:13px;color:var(--muted);transition:transform 0.3s;line-height:1;}
+.acc-body{
+  font-family:var(--serif);font-size:11px;letter-spacing:0.09em;line-height:1.9;color:var(--muted);
+  max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.35s ease;
+}
+.acc-body.open{max-height:220px;padding-bottom:13px;}
+.acc-item.open .acc-icon{transform:rotate(45deg);}
+
+/* ─── PRODUCT PAGE: enlarged text ───────────────────────────────────────────── */
+.template-product .d-name{font-size:28px;}
+.template-product .d-sub{font-size:15px;}
+.template-product .d-price{font-size:18px;}
+.template-product .d-label{font-size:9px;letter-spacing:0.32em;}
+.template-product .d-body{font-size:13px;line-height:2;}
+.template-product .d-del-text{font-size:11px;}
+.template-product .sz{font-size:11px;width:40px;height:40px;}
+.template-product .size-guide{font-size:9px;}
+.template-product .add-btn{font-size:11px;height:48px;}
+.template-product .acc-toggle{font-size:10px;}
+.template-product .acc-body{font-size:13px;line-height:2;}
+
+/* ─── MOBILE ────────────────────────────────────────────────────────────────── */
+@media (max-width:768px){
+  html,body{overflow-x:hidden;max-width:100%;}
+  .top-bar{padding:0 20px;height:72px;}
+  .logo-link img{height:var(--logo-height-mobile,48px);}
+  .entry-logo-top img{height:var(--logo-height-mobile,48px);}
+  .list-collections-section{padding-top:72px;}
+  .cat-item{font-size:13px;}
+  .grid-main{padding:96px 16px 0;}
+  .product-grid{grid-template-columns:repeat(2,1fr);gap:24px 10px;}
+  .detail-layout{grid-template-columns:1fr;margin-top:72px;}
+  .detail-left{position:relative;top:auto;height:auto;padding:24px 20px 0;}
+  .img-box{max-width:100%;}
+  .detail-right{padding:28px 20px 0;}
+  .template-product .d-name{font-size:22px;}
+  .template-product .d-price{font-size:16px;}
+  .page-footer{padding:36px 20px 28px;}
+  .footer-inner{grid-template-columns:1fr;gap:20px;}
+  .footer-bottom{flex-direction:column;align-items:flex-start;gap:14px;}
+}
+
+/* ─── DAWN GRID OVERRIDES ────────────────────────────────────────────────────
+   Make Dawn's collection grid (.grid) render as cence's 3-column product grid.
+   Dawn renders <ul class="grid product-grid"> — we override its columns here.
+──────────────────────────────────────────────────────────────────────────────*/
+.collection .grid.product-grid,
+ul.grid.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 36px 20px !important;
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.collection .grid.product-grid li.grid__item,
+ul.grid.product-grid li.grid__item {
+  padding: 0 !important;
+}
+/* Remove Dawn's card chrome — cence cards are plain */
+.card-wrapper,
+.card--product {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+/* Dawn collection page wrapper */
+.collection { padding-top: 116px; }
+@media (max-width: 768px) {
+  .collection .grid.product-grid,
+  ul.grid.product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px 10px !important;
+  }
+  .collection { padding-top: 96px; }
+}
+
+/* ─── ANIMATION ─────────────────────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}

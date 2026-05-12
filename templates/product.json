@@ -1,0 +1,70 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": { "type": "title" },
+        "subtitle": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.type }}",
+            "text_style": "subtitle"
+          }
+        },
+        "price": { "type": "price" },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": { "picker_type": "button" }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": { "show_dynamic_checkout": false }
+        },
+        "details": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "product details",
+            "content": ""
+          }
+        },
+        "material": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "material",
+            "content": "<p>380gsm heavyweight fleece<br>100% organic cotton<br>garment-washed finish</p>"
+          }
+        },
+        "care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "care instructions",
+            "content": "<p>Machine wash cold, 30°C max. Do not bleach. Tumble dry low. Wash inside out to preserve colour.</p>"
+          }
+        },
+        "sustainability": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "sustainability",
+            "content": "<p>Made in Portugal in a GOTS-certified facility. Organic cotton. Packaging 100% recycled and plastic-free.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "subtitle",
+        "price",
+        "variant_picker",
+        "buy_buttons",
+        "details",
+        "material",
+        "care",
+        "sustainability"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "show_size_guide": true
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,35 @@
+{% comment %}
+  cence product card — replaces Dawn's card-product snippet.
+  Accepts the same parameters as Dawn's original for drop-in compatibility
+  wherever card-product is rendered (collection grid, featured collection,
+  related products, search results, etc.).
+
+  Accepts:
+  - card_product: {Object} Product Liquid object
+  - lazy_load: {Boolean} Image lazy loading. Default: true
+{% endcomment %}
+
+{%- if card_product and card_product != empty -%}
+  <a
+    class="product-card"
+    href="{{ card_product.url }}"
+    aria-label="{{ card_product.title | escape }}"
+    style="animation-delay:{{ forloop.index0 | default: 0 | times: 0.06 }}s"
+  >
+    <div class="product-img">
+      {%- if card_product.featured_image -%}
+        <img
+          src="{{ card_product.featured_image | image_url: width: 600, height: 800, crop: 'center' }}"
+          alt="{{ card_product.featured_image.alt | default: card_product.title | escape }}"
+          loading="{{ lazy_load | default: true | ternary: 'lazy', 'eager' }}"
+          width="600"
+          height="800"
+        >
+      {%- else -%}
+        <span class="ph-label">add image</span>
+      {%- endif -%}
+    </div>
+    <p class="p-name">{{ card_product.title | downcase }}</p>
+    <p class="p-price">{{ card_product.price | money }}</p>
+  </a>
+{%- endif -%}
